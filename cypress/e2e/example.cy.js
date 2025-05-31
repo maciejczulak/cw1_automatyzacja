@@ -1,7 +1,6 @@
-describe('Example Test Suite', () => {
-  it('Visits the example page', () => {
-    cy.visit('/'); 
-    cy.contains('h1', 'Hello World'); 
-  });
-
+describe('My First Test Suite', () => {
+    it('My First Test Case', () => {
+        cy.visit('/');
+        cy.contains('h1','Hello World');
+    });
 });

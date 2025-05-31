@@ -2,24 +2,45 @@ name: Przykład Automatyzacji TEST1
 
 on: 
     push:
-        branches: ["main"]
+        branches: 
+          - main
     pull_request:
-        branches: ["main"]
+        branches: 
+          - main
 
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        steps:
+    cypress-run:
+      runs-on: ubuntu-latest
+    
+      services:
+        app:
+          image: nonde:16
+          ports:
+            - 3000:3000
+          options: >-
+            --health-cmd="curl --fail http://localhost:3000 || exit 1" 
+            --health-interval=30s 
+            --health-timeout=10s 
+            --health-retries=5
+      
+    cypress-tests:
+       runs-on: ubuntu-latest
+       steps:
            - name: Checkout code
              uses: actions/checkout@v2
              
            - name: Set up Node.js
              uses: actions/setup-node@v2
              with:
-                    node-version: '20'
+                    node-version: '16'
            - name: Install dependencies
              run: npm install
 
-           - name: Run test
-             run: npm test
+           - name: Run Cypress test
+             uses: cypress-io/github-action@v2
+             with:
+               start: npm start
+               wait-on: 'http://localhost:3000'
+               wait-on-timeout: 60
+               run-tests: npm run test
